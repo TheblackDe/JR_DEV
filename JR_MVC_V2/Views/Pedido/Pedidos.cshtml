@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "Pedidos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header d-flex align-items-center">
+        <i class="fas fa-cart-plus me-1"></i>
+        <h3 class="mb-0">Pedido</h3>
+        <div class="ms-auto">
+            <button type="button" class="btn btn-success d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#carritoModal" onclick="abrirModal()">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="contadorCarrito" class="ms-2 fs-6">+</span> <!-- Contador de productos -->
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Filtro de búsqueda -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="idClient" class="form-label">Nombre y Apellido del cliente</label>
+                <input class="form-control" type="text" id="textidCliente" name="textidCliente" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-primary" id="btnBuscar" type="button">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+            </div>
+        </div>
+        <hr />
+        <!-- Tabla de Artículos -->
+        <table id="tablaArticulos" class="display cell-border" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Nombre del Artículo</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí se llenarán los datos de la tabla de artículos dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal del Carrito de Compras -->
+<div class="modal fade" id="carritoModal" tabindex="-1" aria-labelledby="carritoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="carritoModalLabel">Carrito de Compras</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Campo para nombre del cliente -->
+                <div class="mb-3">
+                    <label for="nombreCliente" class="form-label">Nombre del Cliente</label>
+                    <input type="text" class="form-control" id="nombreCliente" value="" disabled>
+                </div>
+                <!-- Tabla de Productos seleccionados -->
+                <table id="tablaCarrito" class="display cell-border" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Total</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carritoProductos">
+                        <!-- Los productos agregados aparecerán aquí -->
+                    </tbody>
+                </table>
+                <!-- Campo de Comentario -->
+                <div class="mt-3">
+                    <label for="comentarioCarrito" class="form-label">Comentario</label>
+                    <textarea class="form-control" id="comentarioCarrito" rows="3" placeholder="Añade un comentario sobre tu pedido"></textarea>
+                </div>
+                <!-- Mostrar el total del carrito -->
+                <div class="text-end fw-bold mt-3">
+                    Total: $<span id="totalCarrito">0.00</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" id="btnPagar">Pagar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script>
+        var carrito = [];
+        var clienteId = null;
+
+        $(document).ready(function () {
+            // Inicializar DataTable para la tabla de productos
+            $("#tablaArticulos").DataTable({
+                responsive: true,
+                ordering: false,
+                searching: true,
+                "ajax": {
+                    url: '@Url.Action("ArticulosList", "Articulo")',
+                    type: "GET",
+                    dataType: "json",
+                    success: function (response) {
+                        if (Array.isArray(response.data)) {
+                            var productosConStock = response.data.filter(function (producto) {
+                                return producto.Stock > 0; // Mostrar solo productos con stock
+                            });
+                            var table = $('#tablaArticulos').DataTable();
+                            table.clear().rows.add(productosConStock).draw();
+                        } else {
+                            console.log("La respuesta no tiene los datos esperados", response);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Hubo un error: " + error);
+                    }
+                },
+                "columns": [
+                    { "data": "Nombre" },
+                    { "data": "Descripcion" },
+                    {
+                        "data": "Precio",
+                        "render": function (precio) {
+                            return "$" + parseFloat(precio).toFixed(2);
+                        }
+                    },
+                    {
+                        "data": "Stock",
+                        "render": function (stock) {
+                            return stock; // Mostrar el stock actual
+                        }
+                    },
+                    {
+                        "defaultContent": '<button type="button" class="btn btn-success btn-sm btn-agregar"><i class="fas fa-cart-plus"></i> Agregar</button>',
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "90px"
+                    }
+                ],
+                "language": {
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
+                }
+            });
+
+            var tabladata = $('#tablaArticulos').DataTable();
+
+            // Manejar clic en el botón de agregar
+            $("#tablaArticulos tbody").on("click", ".btn-agregar", function () {
+                var fila = $(this).closest("tr");
+                var data = tabladata.row(fila).data(); // Extraer datos de la fila
+
+                if (data && data.Stock > 0) {
+                    var precio = typeof data.Precio === 'string' ? parseFloat(data.Precio.replace('$', '').trim()) : data.Precio;
+
+                    var producto = {
+                        nombre: data.Nombre,
+                        descripcion: data.Descripcion,
+                        precio: precio,
+                        cantidad: 1,
+                        stock: data.Stock
+                    };
+
+                    var productoExistente = carrito.find(p => p.nombre === producto.nombre);
+
+                    if (productoExistente) {
+                        var nuevaCantidad = productoExistente.cantidad + 1;
+
+                        if (nuevaCantidad > productoExistente.stock) {
+                            swal("¡Stock insuficiente!", "No puedes agregar más artículos: " + productoExistente.nombre, "warning");
+                        } else {
+                            productoExistente.cantidad++;
+                            data.Stock--; // Reducir el stock del producto
+                        }
+                    } else {
+                        carrito.push(producto);
+                        data.Stock--; // Reducir el stock del producto
+                    }
+
+                    // Actualizar el stock en la tabla
+                    tabladata.row(fila).data(data).draw(false);
+
+                    // Actualizar el contenido del carrito en el modal
+                    actualizarCarritoModal();
+
+                    // Actualizar el número de productos en el botón
+                    actualizarContadorBoton();
+                } else {
+                    swal("¡Stock insuficiente!", "El producto no tiene stock disponible: " + data.Nombre, "error");
+                }
+            });
+
+            // Función para actualizar el carrito en el modal
+            function actualizarCarritoModal() {
+                var total = 0;
+                var carritoHTML = '';
+
+                $('#carritoProductos').empty();
+
+                carrito.forEach(function (producto) {
+                    var totalProducto = producto.precio * producto.cantidad;
+                    total += totalProducto;
+
+                    carritoHTML += `
+                    <tr>
+                        <td>${producto.nombre}</td>
+                        <td>${producto.cantidad}</td>
+                        <td>$${producto.precio.toFixed(2)}</td>
+                        <td>$${totalProducto.toFixed(2)}</td>
+                        <td><button class="btn btn-danger btn-sm btn-eliminar" onclick="eliminarProducto('${producto.nombre}')"><i class="fas fa-trash-alt"></i> Eliminar</button></td>
+                    </tr>`;
+                });
+
+                $('#carritoProductos').html(carritoHTML);
+                $('#totalCarrito').text(total.toFixed(2));
+            }
+
+            // Función para eliminar un producto del carrito
+            window.eliminarProducto = function (nombre) {
+                carrito = carrito.filter(function (producto) {
+                    if (producto.nombre === nombre) {
+                        var fila = tabladata.rows().data().toArray().find(r => r.Nombre === nombre);
+                        if (fila) {
+                            fila.Stock += producto.cantidad; // Revertir el stock
+                            tabladata.row(function (idx, data) {
+                                return data.Nombre === nombre;
+                            }).data(fila).draw(false);
+                        }
+                    }
+                    return producto.nombre !== nombre;
+                });
+
+                actualizarCarritoModal();
+                actualizarContadorBoton();
+            };
+
+            // Actualizar el contador de productos en el carrito
+            function actualizarContadorBoton() {
+                var contador = carrito.reduce(function (total, producto) {
+                    return total + producto.cantidad;
+                }, 0);
+
+                $('#contadorCarrito').text(contador > 0 ? contador : '+');
+            }
+        });
+    </script>
+
+}

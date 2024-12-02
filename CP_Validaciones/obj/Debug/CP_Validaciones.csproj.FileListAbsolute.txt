@@ -1,0 +1,9 @@
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\bin\Debug\CP_Validaciones.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\bin\Debug\CP_Validaciones.pdb
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\bin\Debug\CP_Entidades.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\bin\Debug\CP_Entidades.pdb
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\obj\Debug\CP_Validaciones.csproj.AssemblyReference.cache
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\obj\Debug\CP_Validaciones.csproj.CoreCompileInputs.cache
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\obj\Debug\CP_Valid.BF70A5BB.Up2Date
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\obj\Debug\CP_Validaciones.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Validaciones\obj\Debug\CP_Validaciones.pdb

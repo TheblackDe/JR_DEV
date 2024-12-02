@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.Title = "Clientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Card Header -->
+<div class="card">
+    <div class="card-header d-flex align-items-center">
+        <i class="fas fa-users me-1"></i>
+        <h3 class="mb-0">Clientes</h3>
+    </div>
+    <div class="card-body">
+
+        <!-- Botón Crear Nuevo -->
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" onclick="abrirModal(null)">Crear Nuevo</button>
+            </div>
+        </div>
+        <hr />
+        <!-- Tabla -->
+        <table id="tabla" class="display cell-border" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Nombres</th>
+                    <th>Apellido</th>
+                    <th>Fecha de nacimiento</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Cliente</h5>
+            </div>
+            <div class="modal-body">
+                <input id="txtid" type="hidden" value="0" />
+                <div class="row g-2">
+                    <div class="col-sm-6">
+                        <label for="txtnombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="txtnombre" placeholder="Ingresa el nombre" autocomplete="off">
+                        <small class="text-danger d-none" id="errorNombre">El nombre es obligatorio.</small>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txtapellido" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="txtapellido" placeholder="Ingresa el apellido" autocomplete="off">
+                        <small class="text-danger d-none" id="errorApellido">El apellido es obligatorio.</small>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txtfechanacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" id="txtfechanacimiento" max="<?php echo date('Y-m-d'); ?>" autocomplete="off">
+                        <small class="text-danger d-none" id="errorFechaNacimiento">La fecha de nacimiento no puede ser futura.</small>
+                    </div>
+
+                    <div class="col-sm-6" id="campoSelect" style="display: none;">
+                        <label for="selectEstado" class="form-label">Estado</label>
+                        <select class="form-select" id="selectEstado">
+                            <option value="1">Activo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="validarYGuardar()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var urlClientesList = '@Url.Action("ClientesList", "Home")';
+    </script>
+    <script src="~/Scripts/app/ListarClientes.js"></script>
+
+    <script src="~/Scripts/app/AuthClientesModal.js"></script>
+    <script>
+        function abrirModal() {
+            $("#FormModal").modal("show");
+        }
+    </script>
+
+    <script src="~/Scripts/app/EditarClientes.js"></script>
+
+    <script src="~/Scripts/app/GuardarClientes.js"></script>
+    <script src="~/Scripts/app/AuthClientesModal.js"></script>
+    <script src="~/Scripts/app/ActualizarCliente.js"></script>
+    <script>
+        function validarYGuardar() {
+            if (authClienteModel()) {
+                var clienteId = document.getElementById("txtid").value.trim();
+                if (clienteId === "0") {
+                    var urlGuardarClientes = '@Url.Action("RegistrarCliente", "Home")';
+                    GuardarCliente(urlGuardarClientes);
+                } else {
+                    var urlActualizarClientes = '@Url.Action("ActualizarCliente", "Home")';
+                    ActualizarCliente(urlActualizarClientes);
+                }
+            }
+        }
+    </script>
+
+    <script>
+        var urlClienteEliminar = '@Url.Action("EliminarCliente", "Home")';
+    </script>
+    <script src="~/Scripts/app/EliminarCliente.js"></script>
+}
+

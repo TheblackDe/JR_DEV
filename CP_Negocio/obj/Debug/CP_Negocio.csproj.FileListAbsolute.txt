@@ -1,0 +1,15 @@
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\CP_Negocio.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\CP_Negocio.pdb
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\CP_Datos.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\CP_Entidades.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\CP_Datos.pdb
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\CP_Entidades.pdb
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\obj\Debug\CP_Negocio.csproj.AssemblyReference.cache
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\obj\Debug\CP_Negocio.csproj.CoreCompileInputs.cache
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\obj\Debug\CP_Negocio.csproj.Up2Date
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\obj\Debug\CP_Negocio.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\obj\Debug\CP_Negocio.pdb
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\CP_Validaciones.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\CP_Validaciones.pdb
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\Newtonsoft.Json.dll
+D:\Edgar\Documentos\Programin\JR_DEV\CP_Negocio\bin\Debug\Newtonsoft.Json.xml

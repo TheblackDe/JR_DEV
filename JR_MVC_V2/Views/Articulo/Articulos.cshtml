@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "Artículos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Card Header -->
+<div class="card">
+    <div class="card-header d-flex align-items-center">
+        <i class="fas fa-boxes me-1"></i>
+        <h3 class="mb-0">Articulos</h3>
+    </div>
+
+    <div class="card-body">
+
+        <!-- Botón Crear Nuevo -->
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" onclick="abrirModal(null)">Crear Nuevo</button>
+            </div>
+        </div>
+        <hr />
+        <!-- Tabla -->
+        <table id="tabladata_art" class="display cell-border" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Disponible</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Artículo</h5>
+            </div>
+            <div class="modal-body">
+                <input id="txtid" type="hidden" value="0" />
+
+                <div class="row g-2">
+                    <div class="col-sm-6">
+                        <label for="txtnombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="txtnombre" placeholder="Ingresa el nombre" autocomplete="off">
+                        <small class="text-danger d-none" id="errorNombre">El nombre es obligatorio.</small>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <label for="txtdescripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="txtdescripcion" placeholder="Ingresa la descripción" rows="3"></textarea>
+                        <small class="text-danger d-none" id="errorDescripcion">La descripción no puede exceder los 255 caracteres.</small>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txtprecio" class="form-label">Precio</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span> <!-- Símbolo de dólar -->
+                            <input type="number" class="form-control" id="txtprecio" placeholder="Ingresa el precio" autocomplete="off">
+                        </div>
+                        <small class="text-danger d-none" id="errorPrecio">El precio debe ser mayor o igual a 0.</small>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txtstock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="txtstock" placeholder="Ingresa el stock" autocomplete="off">
+                        <small class="text-danger d-none" id="errorStock">El stock debe ser mayor o igual a 0.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="validarYGuardar()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var urlArticulosList = '@Url.Action("ArticulosList", "Articulo")';
+    </script>
+    <script src="~/Scripts/app/Articulo/ListarArticulos.js"></script>
+
+    <script src="~/Scripts/app/Articulo/EditarArticulos.js"></script>
+
+    <script>
+        function abrirModal() {
+            $("#FormModal").modal("show");
+        }
+    </script>
+
+    <script src="~/Scripts/app/Articulo/AuthArticulosModal.js"></script>
+    <script src="~/Scripts/app/Articulo/ActualizarArticulo.js"></script>
+    <script src="~/Scripts/app/Articulo/GuardarArticulo.js"></script>
+
+    <script>
+        function validarYGuardar() {
+            if (authArticuloModel()) {
+                var articuloId = document.getElementById("txtid").value.trim();
+                if (articuloId === "0") {
+                    var urlGuardarArticulos = '@Url.Action("RegistrarArticulo", "Articulo")';
+                    GuardarArticulo(urlGuardarArticulos);
+                } else {
+                    var urlActualizarArticulos = '@Url.Action("ActualizarArticulo", "Articulo")';
+                    ActualizarArticulo(urlActualizarArticulos);
+                }
+            }
+        }
+    </script>
+}
